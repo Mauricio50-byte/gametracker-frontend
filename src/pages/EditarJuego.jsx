@@ -1,7 +1,13 @@
 import React from 'react';
+import FormularioJuego from '../components/games/FormularioJuego';
 
 const EditarJuego = () => {
-  return <div>Editar Juego</div>;
+  return (
+    <div className="page">
+      <h1>Editar Juego</h1>
+      <FormularioJuego />
+    </div>
+  );
 };
 
 export default EditarJuego;

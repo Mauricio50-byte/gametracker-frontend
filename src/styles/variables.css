@@ -1,1 +1,14 @@
-
+:root {
+  --color-bg: #ffffff;
+  --color-text: #111111;
+  --color-muted: #666666;
+  --color-primary: #2563eb;
+  --color-border: #e5e7eb;
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 24px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+}
