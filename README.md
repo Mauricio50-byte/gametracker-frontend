@@ -1,71 +1,76 @@
-# Getting Started with Create React App
+# 🎮 GameTracker - Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<div align="center">
+  <h3>Tu biblioteca personal de videojuegos</h3>
+  <p>Organiza, reseña y sigue el progreso de todos tus videojuegos en un solo lugar</p>
+</div>
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 📋 Descripción
 
-### `npm start`
+GameTracker es una aplicación web moderna desarrollada en React que te permite:
+- 📚 Crear y gestionar tu biblioteca personal de videojuegos
+- ⭐ Calificar y escribir reseñas detalladas
+- 📊 Visualizar estadísticas de tu experiencia como gamer
+- ✅ Marcar juegos como completados y registrar horas jugadas
+- 🔍 Buscar y filtrar juegos por plataforma, género y más
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 🚀 Características
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- ✨ Interfaz moderna y responsiva
+- 🎨 Diseño intuitivo y fácil de usar
+- 📱 Compatible con dispositivos móviles
+- ⚡ Navegación rápida y fluida
+- 🎯 Filtros y búsqueda avanzada
+- 📈 Dashboard de estadísticas personales
 
-### `npm test`
+## 🛠️ Tecnologías
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **React** - Librería de JavaScript para interfaces
+- **React Router DOM** - Navegación entre páginas
+- **Axios** - Cliente HTTP para consumir API
+- **CSS3** - Estilos y diseño responsive
 
-### `npm run build`
+## 📦 Instalación
+```bash
+# Clonar repositorio
+git clone https://github.com/tu-usuario/gametracker-frontend.git
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# Entrar al directorio
+cd gametracker-frontend
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# Instalar dependencias
+npm install
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Configurar variables de entorno
+# Crear archivo .env con:
+REACT_APP_API_URL=http://localhost:5000/api
 
-### `npm run eject`
+# Iniciar servidor de desarrollo
+npm start
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🌐 Despliegue
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+La aplicación está desplegada en GitHub Pages:
+👉 [Ver Demo en Vivo](https://tu-usuario.github.io/gametracker-frontend)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 📸 Screenshots
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+![Biblioteca](./screenshots/biblioteca.png)
+![Estadísticas](./screenshots/estadisticas.png)
 
-## Learn More
+## 🔗 Backend
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Este frontend consume una API REST desarrollada en Node.js + Express + MongoDB.
+Repositorio del backend: [gametracker-backend](https://github.com/Mauricio50-byte/gametracker-backend)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 👨‍💻 Autor
 
-### Code Splitting
+**Tu Nombre**
+- GitHub: [@Mauricio50-byte](https://github.com/Mauricio50-byte)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-"# gametracker-frontend" 
+⭐ Si te gusta este proyecto, dale una estrella en GitHub
