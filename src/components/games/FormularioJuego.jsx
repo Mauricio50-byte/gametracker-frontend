@@ -28,6 +28,47 @@ const FormularioJuego = () => {
     setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   };
 
+  const compressToBase64 = (file, maxSize = 600, quality = 0.7) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let { width, height } = img;
+          const scale = Math.min(1, maxSize / Math.max(width, height));
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          try {
+            const dataUrl = canvas.toDataURL('image/jpeg', quality);
+            resolve(dataUrl);
+          } catch (err) {
+            reject(err);
+          }
+        };
+        img.onerror = reject;
+        img.src = ev.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    try {
+      const base64 = await compressToBase64(file, 800, 0.75);
+      setForm((prev) => ({ ...prev, portada: base64 }));
+    } catch (err) {
+      setError('No se pudo procesar la imagen');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -88,6 +129,15 @@ const FormularioJuego = () => {
             <option value="Otro">Otro</option>
           </select>
         </div>
+      </div>
+      <div>
+        <label>Portada (imagen)</label>
+        <input type="file" accept="image/*" onChange={handleImageChange} />
+        {form.portada && (
+          <div style={{ marginTop: 8 }}>
+            <small>Imagen preparada para guardar (base64)</small>
+          </div>
+        )}
       </div>
       <div style={{ display: 'flex', gap: 12 }}>
         <div style={{ flex: 1 }}>

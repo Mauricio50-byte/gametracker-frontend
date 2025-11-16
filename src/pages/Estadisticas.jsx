@@ -2,6 +2,7 @@ import React from 'react';
 import EstadisticasPersonales from '../components/stats/EstadisticasPersonales';
 import ResumenGeneral from '../components/stats/ResumenGeneral';
 import GraficoPlataformas from '../components/stats/GraficoPlataformas';
+import GraficoGeneros from '../components/stats/GraficoGeneros';
 
 const Estadisticas = () => {
   return (
@@ -10,6 +11,7 @@ const Estadisticas = () => {
       <EstadisticasPersonales />
       <ResumenGeneral />
       <GraficoPlataformas />
+      <GraficoGeneros />
     </div>
   );
 };

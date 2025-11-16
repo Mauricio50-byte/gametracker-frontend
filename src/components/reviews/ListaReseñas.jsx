@@ -1,12 +1,12 @@
 import React from 'react';
 import TarjetaReseña from './TarjetaReseña';
 
-const ListaReseñas = ({ items = [], meta, onPrev, onNext }) => {
+const ListaReseñas = ({ items = [], meta, onPrev, onNext, onRefresh }) => {
   return (
     <div>
       <div style={{ display: 'grid', gap: 12 }}>
         {items.map((r) => (
-          <TarjetaReseña key={r._id} review={r} />
+          <TarjetaReseña key={r._id} review={r} onRefresh={onRefresh} />
         ))}
         {items.length === 0 && <div>No hay reseñas</div>}
       </div>
