@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Loading from '../components/common/Loading';
 import ErrorMessage from '../components/common/ErrorMessage';
 import ListaReseñas from '../components/reviews/ListaReseñas';
@@ -8,6 +8,7 @@ const API_BASE = 'http://localhost:4000';
 
 const DetalleJuego = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [game, setGame] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [meta, setMeta] = useState(null);
@@ -24,6 +25,7 @@ const DetalleJuego = () => {
     recomendado: false
   });
   const [savingReview, setSavingReview] = useState(false);
+  const [deletingGame, setDeletingGame] = useState(false);
   const setStars = (n) => setReviewForm((prev) => ({ ...prev, puntuacion: n }));
 
   const handleReviewChange = (e) => {
@@ -94,6 +96,23 @@ const DetalleJuego = () => {
 
   useEffect(() => { load(1); }, [load]);
 
+  const eliminar = async () => {
+    const ok = window.confirm('¿Eliminar este juego?');
+    if (!ok) return;
+    try {
+      setDeletingGame(true);
+      setError('');
+      const res = await fetch(`${API_BASE}/api/games/${id}`, { method: 'DELETE' });
+      const json = await res.json();
+      if (!json.success) throw new Error(json.message || 'Error eliminando juego');
+      navigate('/biblioteca');
+    } catch (e) {
+      setError(e.message || 'Error');
+    } finally {
+      setDeletingGame(false);
+    }
+  };
+
   if (loading) return <div className="container py-4"><Loading text="Cargando detalle..." /></div>;
   if (error) return <div className="container py-4"><ErrorMessage message={error} /></div>;
   if (!game) return <div className="container py-4">No encontrado</div>;
@@ -109,7 +128,10 @@ const DetalleJuego = () => {
               <span className="badge bg-secondary">{game.genero}</span>
             </div>
           </div>
-          <a href="/biblioteca" className="btn btn-light">Volver</a>
+          <div className="d-flex gap-2">
+            <a href="/biblioteca" className="btn btn-light">Volver</a>
+            <button className="btn btn-danger" onClick={eliminar} disabled={deletingGame}>{deletingGame ? 'Eliminando...' : 'Eliminar'}</button>
+          </div>
         </div>
       </section>
 
@@ -129,6 +151,35 @@ const DetalleJuego = () => {
                         <span key={i} className={`star ${i < Number(game.puntuacion || 0) ? 'filled' : ''}`}>★</span>
                       ))}
                     </div>
+                  )}
+              </div>
+            </div>
+
+              <div className="card mt-3">
+                <div className="card-header">Aspectos del juego</div>
+                <div className="card-body">
+                  {game.aspectosPositivos && game.aspectosPositivos.length > 0 && (
+                    <div className="mb-2">
+                      <div className="fw-semibold mb-1">Positivos</div>
+                      <div className="d-flex flex-wrap gap-2">
+                        {game.aspectosPositivos.map((a, i) => (
+                          <span key={i} className="badge bg-success">{a}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {game.aspectosNegativos && game.aspectosNegativos.length > 0 && (
+                    <div>
+                      <div className="fw-semibold mb-1">Negativos</div>
+                      <div className="d-flex flex-wrap gap-2">
+                        {game.aspectosNegativos.map((a, i) => (
+                          <span key={i} className="badge bg-danger">{a}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {(!game.aspectosPositivos || game.aspectosPositivos.length === 0) && (!game.aspectosNegativos || game.aspectosNegativos.length === 0) && (
+                    <div className="text-muted">Sin aspectos registrados</div>
                   )}
                 </div>
               </div>
