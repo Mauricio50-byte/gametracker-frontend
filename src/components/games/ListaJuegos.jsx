@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Loading from '../common/Loading';
 import ErrorMessage from '../common/ErrorMessage';
@@ -16,7 +16,7 @@ const ListaJuegos = () => {
   const [plataformaFilter, setPlataformaFilter] = useState('');
   const [generoFilter, setGeneroFilter] = useState('');
 
-  const load = async (p = 1) => {
+  const load = useCallback(async (p = 1) => {
     try {
       setLoading(true);
       setError('');
@@ -42,10 +42,9 @@ const ListaJuegos = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [q, plataformaFilter, generoFilter]);
 
-  useEffect(() => { load(1); }, []);
-  useEffect(() => { load(1); }, [q, plataformaFilter, generoFilter]);
+  useEffect(() => { load(1); }, [load]);
 
   const eliminar = async (id) => {
     const ok = window.confirm('¿Eliminar este juego?');
