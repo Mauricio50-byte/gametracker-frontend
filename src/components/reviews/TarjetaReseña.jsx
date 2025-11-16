@@ -104,42 +104,50 @@ const TarjetaReseña = ({ review, onRefresh }) => {
   return (
     <div className="card">
       {editing && <EditModal />}
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <strong>{review.titulo}</strong>
-        <span className="stars">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <span key={i} className={`star ${i < filled ? 'filled' : ''}`}>★</span>
-          ))}
-        </span>
+      <div className="card-body">
+        <div className="d-flex justify-content-between align-items-center">
+          <strong>{review.titulo}</strong>
+          <span className="stars">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <span key={i} className={`star ${i < filled ? 'filled' : ''}`}>★</span>
+            ))}
+          </span>
+        </div>
+        <div className="mt-2 text-muted">{review.contenido}</div>
+        {Array.isArray(review.aspectosPositivos) && review.aspectosPositivos.length > 0 && (
+          <div className="mt-2 d-flex gap-2 flex-wrap">
+            {review.aspectosPositivos.map((p, idx) => (
+              <span key={idx} className="badge bg-success">{p}</span>
+            ))}
+          </div>
+        )}
+        {Array.isArray(review.aspectosNegativos) && review.aspectosNegativos.length > 0 && (
+          <div className="mt-1 d-flex gap-2 flex-wrap">
+            {review.aspectosNegativos.map((n, idx) => (
+              <span key={idx} className="badge bg-danger">{n}</span>
+            ))}
+          </div>
+        )}
+        <div className="mt-2">
+          {review.recomendado ? (
+            <span className="badge bg-success">Recomendado</span>
+          ) : (
+            <span className="badge bg-secondary">No recomendado</span>
+          )}
+        </div>
+        <div className="d-flex gap-2 mt-3">
+          <button className="btn btn-outline-primary btn-sm" onClick={() => setEditing(true)}>Editar</button>
+          <button className="btn btn-outline-danger btn-sm" onClick={startDelete}>Eliminar</button>
+        </div>
+        {error && <div className="text-danger mt-2 small">{error}</div>}
+        {confirmingDelete && (
+          <div className="mt-2 d-flex gap-2 align-items-center">
+            <span>¿Seguro que deseas eliminar esta reseña?</span>
+            <button className="btn btn-danger btn-sm" onClick={confirmDelete} disabled={loading}>Sí</button>
+            <button className="btn btn-outline-secondary btn-sm" onClick={cancelDelete} disabled={loading}>No</button>
+          </div>
+        )}
       </div>
-      <div style={{ color: 'var(--color-muted)', marginTop: 6 }}>{review.contenido}</div>
-      {Array.isArray(review.aspectosPositivos) && review.aspectosPositivos.length > 0 && (
-        <div style={{ marginTop: 8, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          {review.aspectosPositivos.map((p, idx) => (
-            <span key={idx} className="badge">{p}</span>
-          ))}
-        </div>
-      )}
-      {Array.isArray(review.aspectosNegativos) && review.aspectosNegativos.length > 0 && (
-        <div style={{ marginTop: 4, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          {review.aspectosNegativos.map((n, idx) => (
-            <span key={idx} className="badge muted">{n}</span>
-          ))}
-        </div>
-      )}
-      {review.recomendado && <div style={{ marginTop: 8 }}>✅ Recomendado</div>}
-      <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-        <button onClick={() => setEditing(true)}>Editar</button>
-        <button onClick={startDelete}>Eliminar</button>
-      </div>
-      {error && <div style={{ color: 'red', marginTop: 6 }}>{error}</div>}
-      {confirmingDelete && (
-        <div style={{ marginTop: 8, display: 'flex', gap: 8, alignItems: 'center' }}>
-          <span>¿Seguro que deseas eliminar esta reseña?</span>
-          <button onClick={confirmDelete} disabled={loading}>Sí</button>
-          <button onClick={cancelDelete} disabled={loading}>No</button>
-        </div>
-      )}
     </div>
   );
 };

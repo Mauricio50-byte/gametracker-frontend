@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import Loading from '../components/common/Loading';
 import ErrorMessage from '../components/common/ErrorMessage';
@@ -69,7 +69,7 @@ const DetalleJuego = () => {
     }
   };
 
-  const load = async (p = 1) => {
+  const load = useCallback(async (p = 1) => {
     try {
       setLoading(true);
       setError('');
@@ -90,9 +90,9 @@ const DetalleJuego = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, sort]);
 
-  useEffect(() => { load(1); }, [id, sort]);
+  useEffect(() => { load(1); }, [load]);
 
   if (loading) return <div className="container py-4"><Loading text="Cargando detalle..." /></div>;
   if (error) return <div className="container py-4"><ErrorMessage message={error} /></div>;

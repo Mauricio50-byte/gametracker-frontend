@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import ListaReseñas from '../components/reviews/ListaReseñas';
 import Loading from '../components/common/Loading';
 import ErrorMessage from '../components/common/ErrorMessage';
@@ -12,6 +12,7 @@ const Reseñas = () => {
   const [error, setError] = useState('');
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState('date_desc');
+  const [filterText, setFilterText] = useState('');
   const [games, setGames] = useState([]);
   const [gamesError, setGamesError] = useState('');
   const [gamesLoading, setGamesLoading] = useState(false);
@@ -20,13 +21,13 @@ const Reseñas = () => {
     juegoId: '',
     titulo: '',
     contenido: '',
-    puntuacion: 5,
+    puntuacion: 10,
     aspectosPositivos: '',
     aspectosNegativos: '',
     recomendado: false
   });
 
-  const load = async (p = 1) => {
+  const load = useCallback(async (p = 1) => {
     try {
       setLoading(true);
       setError('');
@@ -41,9 +42,9 @@ const Reseñas = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [sort]);
 
-  const loadGames = async () => {
+  const loadGames = useCallback(async () => {
     try {
       setGamesLoading(true);
       setGamesError('');
@@ -56,9 +57,9 @@ const Reseñas = () => {
     } finally {
       setGamesLoading(false);
     }
-  };
+  }, []);
 
-  useEffect(() => { load(1); loadGames(); }, [sort]);
+  useEffect(() => { load(1); loadGames(); }, [load, loadGames]);
 
   const setStars = (n) => setReviewForm((prev) => ({ ...prev, puntuacion: n }));
   const handleChange = (e) => {
@@ -99,8 +100,8 @@ const Reseñas = () => {
     }
   };
 
-  if (loading) return <div className="page"><Loading text="Cargando reseñas..." /></div>;
-  if (error) return <div className="page"><ErrorMessage message={error} /></div>;
+  if (loading) return <div className="container py-4"><Loading text="Cargando reseñas..." /></div>;
+  if (error) return <div className="container py-4"><ErrorMessage message={error} /></div>;
 
   return (
     <div>
@@ -115,82 +116,115 @@ const Reseñas = () => {
       </section>
       <section className="py-4">
         <div className="container">
-          <div className="card mb-3">
-            <div className="card-body d-flex gap-2 align-items-center">
-              <span>Ordenar por</span>
-              <select className="form-select" value={sort} onChange={(e) => setSort(e.target.value)} style={{ maxWidth: 240 }}>
-                <option value="date_desc">Más recientes</option>
-                <option value="date_asc">Más antiguas</option>
-                <option value="rating_desc">Mejor puntuadas</option>
-                <option value="rating_asc">Peor puntuadas</option>
-              </select>
+          <div className="row g-4">
+            <div className="col-lg-8">
+              <div className="card mb-3">
+                <div className="card-header">Orden y filtros</div>
+                <div className="card-body">
+                  <div className="row g-3">
+                    <div className="col-md-6 d-flex align-items-center gap-2">
+                      <span>Ordenar por</span>
+                      <select className="form-select" value={sort} onChange={(e) => setSort(e.target.value)} style={{ maxWidth: 240 }}>
+                        <option value="date_desc">Más recientes</option>
+                        <option value="date_asc">Más antiguas</option>
+                        <option value="rating_desc">Mejor puntuadas</option>
+                        <option value="rating_asc">Peor puntuadas</option>
+                      </select>
+                    </div>
+                    <div className="col-md-6">
+                      <label className="form-label">Buscar en reseñas</label>
+                      <input className="form-control" placeholder="Texto en título, contenido o aspectos" value={filterText} onChange={(e) => setFilterText(e.target.value)} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <form onSubmit={submitReview} className="card mb-3">
+                <div className="card-header">Crear reseña</div>
+                <div className="card-body">
+                  <div className="row g-3">
+                    <div className="col-md-8">
+                      <label className="form-label">Buscar juego</label>
+                      <input className="form-control" type="text" placeholder="Buscar juego..." value={reviewForm.q || ''} onChange={(e) => setReviewForm((prev) => ({ ...prev, q: e.target.value }))} />
+                    </div>
+                    <div className="col-md-4">
+                      <label className="form-label">Juego</label>
+                      <select className="form-select" name="juegoId" value={reviewForm.juegoId} onChange={handleChange} required>
+                        <option value="">Selecciona juego</option>
+                        {games.filter((g) => {
+                          const q = (reviewForm.q || '').toLowerCase();
+                          if (!q) return true;
+                          return g.titulo.toLowerCase().includes(q);
+                        }).map((g) => (
+                          <option key={g._id} value={g._id}>{g.titulo}</option>
+                        ))}
+                      </select>
+                      {gamesLoading && <div className="form-text">Cargando juegos...</div>}
+                      {gamesError && <div className="text-danger small">{gamesError}</div>}
+                    </div>
+                    <div className="col-md-8">
+                      <label className="form-label">Título</label>
+                      <input className="form-control" name="titulo" value={reviewForm.titulo} onChange={handleChange} required maxLength={120} />
+                      <div className="form-text">{reviewForm.titulo.length}/120</div>
+                    </div>
+                    <div className="col-md-4">
+                      <label className="form-label">Puntuación</label>
+                      <div className="stars" style={{ cursor: 'pointer' }}>
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <span key={i} className={`star ${i < Number(reviewForm.puntuacion || 0) ? 'filled' : ''}`} onClick={() => setStars(i + 1)}>★</span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="col-12">
+                      <label className="form-label">Contenido</label>
+                      <textarea className="form-control" name="contenido" value={reviewForm.contenido} onChange={handleChange} rows={3} required maxLength={500} />
+                      <div className="form-text">{reviewForm.contenido.length}/500</div>
+                    </div>
+                    <div className="col-md-6">
+                      <label className="form-label">Aspectos positivos (coma separados)</label>
+                      <input className="form-control" name="aspectosPositivos" value={reviewForm.aspectosPositivos} onChange={handleChange} />
+                    </div>
+                    <div className="col-md-6">
+                      <label className="form-label">Aspectos negativos (coma separados)</label>
+                      <input className="form-control" name="aspectosNegativos" value={reviewForm.aspectosNegativos} onChange={handleChange} />
+                    </div>
+                    <div className="col-12 d-flex align-items-center gap-2">
+                      <input type="checkbox" id="recomendarCheck" name="recomendado" checked={reviewForm.recomendado} onChange={handleChange} />
+                      <label htmlFor="recomendarCheck" className="m-0">Recomendar</label>
+                    </div>
+                    <div className="col-12 d-flex gap-2">
+                      <button type="submit" className="btn btn-primary" disabled={savingReview}>{savingReview ? 'Guardando...' : 'Agregar reseña'}</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+
+              <div className="card">
+                <div className="card-header">Reseñas</div>
+                <div className="card-body">
+                  <ListaReseñas
+                    items={items}
+                    meta={meta}
+                    onPrev={() => load(page - 1)}
+                    onNext={() => load(page + 1)}
+                    onRefresh={() => load(page)}
+                    filter={filterText}
+                  />
+                </div>
+              </div>
             </div>
-          </div>
-          <form onSubmit={submitReview} className="card mb-3" style={{ display: 'grid', gap: 8 }}>
-            <div className="card-body">
-        <div style={{ display: 'flex', gap: 8 }}>
-          <div style={{ flex: 1 }}>
-            <label>Juego</label>
-            <input type="text" placeholder="Buscar juego..." value={reviewForm.q || ''} onChange={(e) => setReviewForm((prev) => ({ ...prev, q: e.target.value }))} />
-            <select name="juegoId" value={reviewForm.juegoId} onChange={handleChange} required>
-              <option value="">Selecciona juego</option>
-              {games.filter((g) => {
-                const q = (reviewForm.q || '').toLowerCase();
-                if (!q) return true;
-                return g.titulo.toLowerCase().includes(q);
-              }).map((g) => (
-                <option key={g._id} value={g._id}>{g.titulo}</option>
-              ))}
-            </select>
-            {gamesLoading && <div style={{ fontSize: 12, color: 'var(--color-muted)' }}>Cargando juegos...</div>}
-            {gamesError && <div style={{ fontSize: 12, color: 'red' }}>{gamesError}</div>}
-          </div>
-          <div style={{ flex: 1 }}>
-            <label>Título</label>
-            <input name="titulo" value={reviewForm.titulo} onChange={handleChange} required maxLength={120} />
-            <div style={{ fontSize: 12, color: 'var(--color-muted)' }}>{reviewForm.titulo.length}/120</div>
-          </div>
-          <div style={{ width: 160 }}>
-            <label>Puntuación</label>
-            <div className="stars" style={{ cursor: 'pointer' }}>
-              {Array.from({ length: 5 }).map((_, i) => (
-                <span key={i} className={`star ${i < Number(reviewForm.puntuacion || 0) ? 'filled' : ''}`} onClick={() => setStars(i + 1)}>★</span>
-              ))}
+            <div className="col-lg-4">
+              <div className="card h-100">
+                <div className="card-header">Consejos</div>
+                <div className="card-body">
+                  <ul className="list-group list-group-flush">
+                    <li className="list-group-item">Usa títulos claros y concisos</li>
+                    <li className="list-group-item">Sé específico en positivos y negativos</li>
+                    <li className="list-group-item">Puntuación entre 1 y 5 estrellas</li>
+                  </ul>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div>
-          <label>Contenido</label>
-          <textarea name="contenido" value={reviewForm.contenido} onChange={handleChange} rows={3} required maxLength={500} />
-          <div style={{ fontSize: 12, color: 'var(--color-muted)' }}>{reviewForm.contenido.length}/500</div>
-        </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <div style={{ flex: 1 }}>
-            <label>Aspectos positivos (coma separados)</label>
-            <input name="aspectosPositivos" value={reviewForm.aspectosPositivos} onChange={handleChange} />
-          </div>
-          <div style={{ flex: 1 }}>
-            <label>Aspectos negativos (coma separados)</label>
-            <input name="aspectosNegativos" value={reviewForm.aspectosNegativos} onChange={handleChange} />
-          </div>
-        </div>
-        <label>
-          <input type="checkbox" name="recomendado" checked={reviewForm.recomendado} onChange={handleChange} />
-          Recomendar
-        </label>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button type="submit" className="btn btn-primary" disabled={savingReview}>{savingReview ? 'Guardando...' : 'Agregar reseña'}</button>
-        </div>
-            </div>
-          </form>
-          <div className="mt-3">
-            <ListaReseñas
-              items={items}
-              meta={meta}
-              onPrev={() => load(page - 1)}
-              onNext={() => load(page + 1)}
-              onRefresh={() => load(page)}
-            />
           </div>
         </div>
       </section>
