@@ -39,7 +39,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+          REACT_APP_API_URL: https://caribe-ense-a-pagina-de-donaciones.onrender.com
           PUBLIC_URL: /${{ github.event.repository.name }}
         working-directory: ${{ steps.detect.outputs.dir }}
       - name: Add SPA 404 fallback
