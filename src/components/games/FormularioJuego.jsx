@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Toast from '../common/Toast';
 
 const API_BASE = 'http://localhost:4000';
 
@@ -20,6 +21,7 @@ const FormularioJuego = () => {
   const [form, setForm] = useState(initial);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [toast, setToast] = useState('');
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -38,7 +40,8 @@ const FormularioJuego = () => {
       });
       const json = await res.json();
       if (!json.success) throw new Error(json.message || 'Error');
-      navigate('/biblioteca');
+      setToast('Juego guardado correctamente');
+      setTimeout(() => navigate('/biblioteca'), 1000);
     } catch (e) {
       setError(e.message || 'Error');
     } finally {
@@ -48,6 +51,7 @@ const FormularioJuego = () => {
 
   return (
     <form onSubmit={handleSubmit} className="card" style={{ display: 'grid', gap: 12 }}>
+      <Toast message={toast} onClose={() => setToast('')} />
       {error && <div style={{ color: 'red' }}>{error}</div>}
       <div>
         <label>Título</label>

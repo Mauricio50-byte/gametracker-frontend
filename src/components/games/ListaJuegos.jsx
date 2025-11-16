@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import Loading from '../common/Loading';
+import ErrorMessage from '../common/ErrorMessage';
 
 const API_BASE = 'http://localhost:4000';
 const PAGE_SIZE = 10;
@@ -29,10 +32,21 @@ const ListaJuegos = () => {
 
   useEffect(() => { load(1); }, []);
 
+  const renderStars = (val) => {
+    const n = Math.max(Math.min(Number(val || 0), 5), 0);
+    return (
+      <span className="stars">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <span key={i} className={`star ${i < n ? 'filled' : ''}`}>★</span>
+        ))}
+      </span>
+    );
+  };
+
   return (
     <div>
-      {loading && <div>Cargando...</div>}
-      {error && <div style={{ color: 'red' }}>{error}</div>}
+      {loading && <Loading text="Cargando juegos..." />}
+      {error && <ErrorMessage message={error} />}
       {!loading && !error && (
         <div>
           <div style={{ display: 'grid', gap: 12 }}>
@@ -43,6 +57,13 @@ const ListaJuegos = () => {
                   <span>{g.plataforma}</span>
                 </div>
                 <div style={{ color: 'var(--color-muted)' }}>{g.genero}</div>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 8 }}>
+                  {typeof g.puntuacion === 'number' && renderStars(g.puntuacion)}
+                  {g.completado && <span className="badge success">Completado</span>}
+                </div>
+                <div style={{ marginTop: 8 }}>
+                  <Link to={`/juego/${g._id}`}>Ver detalle</Link>
+                </div>
               </div>
             ))}
             {items.length === 0 && <div>No hay juegos</div>}
