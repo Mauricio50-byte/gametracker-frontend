@@ -45,6 +45,11 @@ jobs:
       - name: Add SPA 404 fallback
         run: cp build/index.html build/404.html
         working-directory: ${{ steps.detect.outputs.dir }}
+      - name: Disable Jekyll on Pages
+        run: |
+          mkdir -p build
+          printf "" > build/.nojekyll
+        working-directory: ${{ steps.detect.outputs.dir }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
