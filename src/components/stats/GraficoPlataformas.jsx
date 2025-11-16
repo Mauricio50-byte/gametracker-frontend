@@ -47,8 +47,15 @@ const GraficoPlataformas = () => {
         {items.map((it) => (
           <div key={it.platform} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span style={{ width: 140 }}>{it.platform}</span>
-            <div style={{ flex: 1, background: 'var(--color-border)', height: 8, borderRadius: 999 }}>
-              <div style={{ width: `${Math.round((it.count / total) * 100)}%`, height: 8, background: 'var(--color-primary)', borderRadius: 999 }} />
+            <div className="progress" style={{ flex: 1, height: 8 }}>
+              <div
+                className="progress-bar bg-primary"
+                role="progressbar"
+                style={{ width: `${Math.round((it.count / total) * 100)}%` }}
+                aria-valuenow={Math.round((it.count / total) * 100)}
+                aria-valuemin="0"
+                aria-valuemax="100"
+              />
             </div>
             <span>{it.count}</span>
           </div>

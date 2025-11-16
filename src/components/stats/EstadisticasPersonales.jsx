@@ -39,8 +39,15 @@ const EstadisticasPersonales = () => {
       {rate && (
         <div className="card" style={{ display: 'grid', gap: 8 }}>
           <strong>Tasa de Completitud</strong>
-          <div style={{ background: 'var(--color-border)', height: 10, borderRadius: 999 }}>
-            <div style={{ width: `${rate.completionRate}%`, height: 10, background: 'var(--color-success)', borderRadius: 999 }} />
+          <div className="progress" style={{ height: 10 }}>
+            <div
+              className="progress-bar bg-success"
+              role="progressbar"
+              style={{ width: `${rate.completionRate}%` }}
+              aria-valuenow={rate.completionRate}
+              aria-valuemin="0"
+              aria-valuemax="100"
+            />
           </div>
           <div>{rate.completionRate}% ({rate.completedGames}/{rate.totalGames})</div>
         </div>
