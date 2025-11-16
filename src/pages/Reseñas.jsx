@@ -21,7 +21,7 @@ const Reseñas = () => {
     juegoId: '',
     titulo: '',
     contenido: '',
-    puntuacion: 10,
+    puntuacion: 5,
     aspectosPositivos: '',
     aspectosNegativos: '',
     recomendado: false

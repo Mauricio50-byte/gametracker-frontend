@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import Toast from '../common/Toast';
 import ErrorMessage from '../common/ErrorMessage';
 
@@ -14,11 +14,15 @@ const initial = {
   portada: '',
   completado: false,
   puntuacion: 0,
-  horasJugadas: 0
+  horasJugadas: 0,
+  aspectosPositivos: '',
+  aspectosNegativos: ''
 };
 
 const FormularioJuego = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const isEdit = !!id;
   const [form, setForm] = useState(initial);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -75,14 +79,31 @@ const FormularioJuego = () => {
     try {
       setLoading(true);
       setError('');
-      const res = await fetch(`${API_BASE}/api/games`, {
-        method: 'POST',
+      const positivos = (form.aspectosPositivos || '')
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+      const negativos = (form.aspectosNegativos || '')
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+      const payload = {
+        ...form,
+        puntuacion: typeof form.puntuacion === 'string' ? Number(form.puntuacion) : form.puntuacion,
+        horasJugadas: typeof form.horasJugadas === 'string' ? Number(form.horasJugadas) : form.horasJugadas,
+        aspectosPositivos: positivos,
+        aspectosNegativos: negativos
+      };
+      const url = isEdit ? `${API_BASE}/api/games/${id}` : `${API_BASE}/api/games`;
+      const method = isEdit ? 'PUT' : 'POST';
+      const res = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
+        body: JSON.stringify(payload)
       });
       const json = await res.json();
       if (!json.success) throw new Error(json.message || 'Error');
-      setToast('Juego guardado correctamente');
+      setToast(isEdit ? 'Juego actualizado correctamente' : 'Juego guardado correctamente');
       setTimeout(() => navigate('/biblioteca'), 1000);
     } catch (e) {
       setError(e.message || 'Error');
@@ -90,6 +111,38 @@ const FormularioJuego = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const loadGame = async () => {
+      if (!id) return;
+      try {
+        setLoading(true);
+        setError('');
+        const res = await fetch(`${API_BASE}/api/games/${id}`);
+        const json = await res.json();
+        if (!json.success) throw new Error(json.message || 'Error');
+        const g = json.data;
+        setForm({
+          titulo: g.titulo || '',
+          plataforma: g.plataforma || '',
+          genero: g.genero || '',
+          desarrollador: g.desarrollador || '',
+          anioLanzamiento: g.anioLanzamiento || new Date().getFullYear(),
+          portada: g.portada || '',
+          completado: !!g.completado,
+          puntuacion: g.puntuacion || 0,
+          horasJugadas: g.horasJugadas || 0,
+          aspectosPositivos: Array.isArray(g.aspectosPositivos) ? g.aspectosPositivos.join(', ') : '',
+          aspectosNegativos: Array.isArray(g.aspectosNegativos) ? g.aspectosNegativos.join(', ') : ''
+        });
+      } catch (e) {
+        setError(e.message || 'Error');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadGame();
+  }, [id]);
 
   return (
     <form onSubmit={handleSubmit} className="d-grid gap-3">
@@ -162,6 +215,14 @@ const FormularioJuego = () => {
               <input className="form-control" type="number" name="horasJugadas" value={form.horasJugadas} onChange={handleChange} min="0" />
             </div>
             <div className="col-12">
+              <label className="form-label">Aspectos positivos (coma separados)</label>
+              <input className="form-control" name="aspectosPositivos" value={form.aspectosPositivos} onChange={handleChange} />
+            </div>
+            <div className="col-12">
+              <label className="form-label">Aspectos negativos (coma separados)</label>
+              <input className="form-control" name="aspectosNegativos" value={form.aspectosNegativos} onChange={handleChange} />
+            </div>
+            <div className="col-12">
               <div className="form-check">
                 <input className="form-check-input" type="checkbox" name="completado" checked={form.completado} onChange={handleChange} id="completadoCheck" />
                 <label className="form-check-label" htmlFor="completadoCheck">Completado</label>
@@ -172,7 +233,7 @@ const FormularioJuego = () => {
       </div>
       <div className="d-flex gap-2">
         <button type="button" className="btn btn-outline-secondary" onClick={() => navigate('/biblioteca')}>Cancelar</button>
-        <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? 'Guardando...' : 'Guardar'}</button>
+        <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? (isEdit ? 'Actualizando...' : 'Guardando...') : (isEdit ? 'Actualizar' : 'Guardar')}</button>
       </div>
     </form>
   );

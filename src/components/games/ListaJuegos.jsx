@@ -32,6 +32,23 @@ const ListaJuegos = () => {
 
   useEffect(() => { load(1); }, []);
 
+  const eliminar = async (id) => {
+    const ok = window.confirm('¿Eliminar este juego?');
+    if (!ok) return;
+    try {
+      setLoading(true);
+      setError('');
+      const res = await fetch(`${API_BASE}/api/games/${id}`, { method: 'DELETE' });
+      const json = await res.json();
+      if (!json.success) throw new Error(json.message || 'Error eliminando juego');
+      await load(page);
+    } catch (e) {
+      setError(e.message || 'Error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const renderStars = (val) => {
     const n = Math.max(Math.min(Number(val || 0), 5), 0);
     return (
@@ -61,8 +78,10 @@ const ListaJuegos = () => {
                   {typeof g.puntuacion === 'number' && renderStars(g.puntuacion)}
                   {g.completado && <span className="badge success">Completado</span>}
                 </div>
-                <div style={{ marginTop: 8 }}>
+                <div style={{ marginTop: 8, display: 'flex', gap: 12, alignItems: 'center' }}>
                   <Link to={`/juego/${g._id}`}>Ver detalle</Link>
+                  <Link to={`/editar/${g._id}`}>Editar</Link>
+                  <button onClick={() => eliminar(g._id)}>Eliminar</button>
                 </div>
               </div>
             ))}
