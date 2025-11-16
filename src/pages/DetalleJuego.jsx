@@ -94,89 +94,114 @@ const DetalleJuego = () => {
 
   useEffect(() => { load(1); }, [id, sort]);
 
-  if (loading) return <div className="page"><Loading text="Cargando detalle..." /></div>;
-  if (error) return <div className="page"><ErrorMessage message={error} /></div>;
-  if (!game) return <div className="page">No encontrado</div>;
+  if (loading) return <div className="container py-4"><Loading text="Cargando detalle..." /></div>;
+  if (error) return <div className="container py-4"><ErrorMessage message={error} /></div>;
+  if (!game) return <div className="container py-4">No encontrado</div>;
 
   return (
-    <div className="page">
-      <h1>{game.titulo}</h1>
-      <div className="card" style={{ marginBottom: 16 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+    <div>
+      <section className="py-4 text-white" style={{ backgroundImage: 'linear-gradient(90deg, #06b6d4 0%, #3b82f6 100%)' }}>
+        <div className="container d-flex justify-content-between align-items-center">
           <div>
-            <div><strong>Plataforma:</strong> {game.plataforma}</div>
-            <div><strong>Género:</strong> {game.genero}</div>
-          </div>
-          {typeof game.puntuacion === 'number' && (
-            <div className="stars">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <span key={i} className={`star ${i < Number(game.puntuacion || 0) ? 'filled' : ''}`}>★</span>
-              ))}
+            <h1 className="h3 fw-bold m-0">{game.titulo}</h1>
+            <div className="mt-2 d-flex gap-3 align-items-center">
+              <span className="badge bg-primary">{game.plataforma}</span>
+              <span className="badge bg-secondary">{game.genero}</span>
             </div>
-          )}
+          </div>
+          <a href="/biblioteca" className="btn btn-light">Volver</a>
         </div>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 8 }}>
-          {game.horasJugadas > 0 && <div><strong>Horas:</strong> {game.horasJugadas}</div>}
-          {game.completado && <span className="badge success">Completado</span>}
-        </div>
-      </div>
+      </section>
 
-      <h2>Reseñas</h2>
-      <div className="card" style={{ marginBottom: 12, display: 'flex', gap: 8, alignItems: 'center' }}>
-        <span>Ordenar por</span>
-        <select value={sort} onChange={(e) => setSort(e.target.value)}>
-          <option value="date_desc">Más recientes</option>
-          <option value="date_asc">Más antiguas</option>
-          <option value="rating_desc">Mejor puntuadas</option>
-          <option value="rating_asc">Peor puntuadas</option>
-        </select>
-      </div>
-      <form onSubmit={submitReview} className="card" style={{ display: 'grid', gap: 8, marginBottom: 12 }}>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <div style={{ flex: 1 }}>
-            <label>Título</label>
-            <input name="titulo" value={reviewForm.titulo} onChange={handleReviewChange} required maxLength={120} />
-            <div style={{ fontSize: 12, color: 'var(--color-muted)' }}>{reviewForm.titulo.length}/120</div>
+      <section className="py-4">
+        <div className="container">
+          <div className="row g-4">
+            <div className="col-lg-8">
+              <div className="card">
+                <div className="card-body d-flex justify-content-between align-items-center">
+                  <div>
+                    {game.horasJugadas > 0 && <div><strong>Horas:</strong> {game.horasJugadas}</div>}
+                    {game.completado && <span className="badge success">Completado</span>}
+                  </div>
+                  {typeof game.puntuacion === 'number' && (
+                    <div className="stars">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <span key={i} className={`star ${i < Number(game.puntuacion || 0) ? 'filled' : ''}`}>★</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="card mt-3">
+                <div className="card-body d-flex gap-2 align-items-center">
+                  <span>Ordenar por</span>
+                  <select className="form-select" value={sort} onChange={(e) => setSort(e.target.value)} style={{ maxWidth: 240 }}>
+                    <option value="date_desc">Más recientes</option>
+                    <option value="date_asc">Más antiguas</option>
+                    <option value="rating_desc">Mejor puntuadas</option>
+                    <option value="rating_asc">Peor puntuadas</option>
+                  </select>
+                </div>
+              </div>
+
+              <form onSubmit={submitReview} className="card mt-3" style={{ display: 'grid', gap: 8 }}>
+                <div className="card-body">
+          <div style={{ display: 'flex', gap: 8 }}>
+            <div style={{ flex: 1 }}>
+              <label>Título</label>
+              <input name="titulo" value={reviewForm.titulo} onChange={handleReviewChange} required maxLength={120} />
+              <div style={{ fontSize: 12, color: 'var(--color-muted)' }}>{reviewForm.titulo.length}/120</div>
+            </div>
+            <div style={{ width: 160 }}>
+              <label>Puntuación</label>
+              <div className="stars" style={{ cursor: 'pointer' }}>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <span key={i} className={`star ${i < Number(reviewForm.puntuacion || 0) ? 'filled' : ''}`} onClick={() => setStars(i + 1)}>★</span>
+                ))}
+              </div>
+            </div>
           </div>
-          <div style={{ width: 160 }}>
-            <label>Puntuación</label>
-            <div className="stars" style={{ cursor: 'pointer' }}>
-              {Array.from({ length: 5 }).map((_, i) => (
-                <span key={i} className={`star ${i < Number(reviewForm.puntuacion || 0) ? 'filled' : ''}`} onClick={() => setStars(i + 1)}>★</span>
-              ))}
+          <div>
+            <label>Contenido</label>
+            <textarea name="contenido" value={reviewForm.contenido} onChange={handleReviewChange} rows={3} required maxLength={500} />
+            <div style={{ fontSize: 12, color: 'var(--color-muted)' }}>{reviewForm.contenido.length}/500</div>
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <div style={{ flex: 1 }}>
+              <label>Aspectos positivos (coma separados)</label>
+              <input name="aspectosPositivos" value={reviewForm.aspectosPositivos} onChange={handleReviewChange} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <label>Aspectos negativos (coma separados)</label>
+              <input name="aspectosNegativos" value={reviewForm.aspectosNegativos} onChange={handleReviewChange} />
+            </div>
+          </div>
+          <label>
+            <input type="checkbox" name="recomendado" checked={reviewForm.recomendado} onChange={handleReviewChange} />
+            Recomendar
+          </label>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button type="submit" disabled={savingReview}>{savingReview ? 'Guardando...' : 'Agregar reseña'}</button>
+          </div>
+                </div>
+        </form>
+              <div className="mt-3">
+                <ListaReseñas
+                  items={reviews}
+                  meta={meta}
+                  onPrev={() => load(page - 1)}
+                  onNext={() => load(page + 1)}
+                  onRefresh={() => load(page)}
+                />
+              </div>
+            </div>
+            <div className="col-lg-4">
+              
             </div>
           </div>
         </div>
-        <div>
-          <label>Contenido</label>
-          <textarea name="contenido" value={reviewForm.contenido} onChange={handleReviewChange} rows={3} required maxLength={500} />
-          <div style={{ fontSize: 12, color: 'var(--color-muted)' }}>{reviewForm.contenido.length}/500</div>
-        </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <div style={{ flex: 1 }}>
-            <label>Aspectos positivos (coma separados)</label>
-            <input name="aspectosPositivos" value={reviewForm.aspectosPositivos} onChange={handleReviewChange} />
-          </div>
-          <div style={{ flex: 1 }}>
-            <label>Aspectos negativos (coma separados)</label>
-            <input name="aspectosNegativos" value={reviewForm.aspectosNegativos} onChange={handleReviewChange} />
-          </div>
-        </div>
-        <label>
-          <input type="checkbox" name="recomendado" checked={reviewForm.recomendado} onChange={handleReviewChange} />
-          Recomendar
-        </label>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button type="submit" disabled={savingReview}>{savingReview ? 'Guardando...' : 'Agregar reseña'}</button>
-        </div>
-      </form>
-      <ListaReseñas
-        items={reviews}
-        meta={meta}
-        onPrev={() => load(page - 1)}
-        onNext={() => load(page + 1)}
-        onRefresh={() => load(page)}
-      />
+      </section>
     </div>
   );
 };

@@ -9,7 +9,7 @@ const Toast = ({ message, onClose, duration = 1500, type = 'success' }) => {
 
   if (!message) return null;
   return (
-    <div className={`toast ${type}`}>
+    <div className={`toast ${type} alert ${type === 'error' ? 'alert-danger' : 'alert-info'}`}>
       {message}
     </div>
   );

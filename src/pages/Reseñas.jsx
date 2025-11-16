@@ -11,6 +11,7 @@ const Reseñas = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [page, setPage] = useState(1);
+  const [sort, setSort] = useState('date_desc');
   const [games, setGames] = useState([]);
   const [gamesError, setGamesError] = useState('');
   const [gamesLoading, setGamesLoading] = useState(false);
@@ -29,7 +30,7 @@ const Reseñas = () => {
     try {
       setLoading(true);
       setError('');
-      const res = await fetch(`${API_BASE}/api/reviews?page=${p}&limit=10`);
+      const res = await fetch(`${API_BASE}/api/reviews?page=${p}&limit=10&sort=${sort}`);
       const json = await res.json();
       if (!json.success) throw new Error(json.message || 'Error');
       setItems(json.data || []);
@@ -57,7 +58,7 @@ const Reseñas = () => {
     }
   };
 
-  useEffect(() => { load(1); loadGames(); }, []);
+  useEffect(() => { load(1); loadGames(); }, [sort]);
 
   const setStars = (n) => setReviewForm((prev) => ({ ...prev, puntuacion: n }));
   const handleChange = (e) => {
@@ -102,15 +103,42 @@ const Reseñas = () => {
   if (error) return <div className="page"><ErrorMessage message={error} /></div>;
 
   return (
-    <div className="page">
-      <h1>Reseñas</h1>
-      <form onSubmit={submitReview} className="card" style={{ display: 'grid', gap: 8, marginBottom: 12 }}>
+    <div>
+      <section className="py-4 text-white" style={{ backgroundImage: 'linear-gradient(90deg, #06b6d4 0%, #3b82f6 100%)' }}>
+        <div className="container d-flex justify-content-between align-items-center">
+          <div>
+            <h1 className="h3 fw-bold m-0">Reseñas</h1>
+            <div className="mt-2">Crea, ordena y explora reseñas de tus juegos.</div>
+          </div>
+          <a href="/agregar" className="btn btn-light">Agregar juego</a>
+        </div>
+      </section>
+      <section className="py-4">
+        <div className="container">
+          <div className="card mb-3">
+            <div className="card-body d-flex gap-2 align-items-center">
+              <span>Ordenar por</span>
+              <select className="form-select" value={sort} onChange={(e) => setSort(e.target.value)} style={{ maxWidth: 240 }}>
+                <option value="date_desc">Más recientes</option>
+                <option value="date_asc">Más antiguas</option>
+                <option value="rating_desc">Mejor puntuadas</option>
+                <option value="rating_asc">Peor puntuadas</option>
+              </select>
+            </div>
+          </div>
+          <form onSubmit={submitReview} className="card mb-3" style={{ display: 'grid', gap: 8 }}>
+            <div className="card-body">
         <div style={{ display: 'flex', gap: 8 }}>
           <div style={{ flex: 1 }}>
             <label>Juego</label>
+            <input type="text" placeholder="Buscar juego..." value={reviewForm.q || ''} onChange={(e) => setReviewForm((prev) => ({ ...prev, q: e.target.value }))} />
             <select name="juegoId" value={reviewForm.juegoId} onChange={handleChange} required>
               <option value="">Selecciona juego</option>
-              {games.map((g) => (
+              {games.filter((g) => {
+                const q = (reviewForm.q || '').toLowerCase();
+                if (!q) return true;
+                return g.titulo.toLowerCase().includes(q);
+              }).map((g) => (
                 <option key={g._id} value={g._id}>{g.titulo}</option>
               ))}
             </select>
@@ -151,16 +179,21 @@ const Reseñas = () => {
           Recomendar
         </label>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button type="submit" disabled={savingReview}>{savingReview ? 'Guardando...' : 'Agregar reseña'}</button>
+          <button type="submit" className="btn btn-primary" disabled={savingReview}>{savingReview ? 'Guardando...' : 'Agregar reseña'}</button>
         </div>
-      </form>
-      <ListaReseñas
-        items={items}
-        meta={meta}
-        onPrev={() => load(page - 1)}
-        onNext={() => load(page + 1)}
-        onRefresh={() => load(page)}
-      />
+            </div>
+          </form>
+          <div className="mt-3">
+            <ListaReseñas
+              items={items}
+              meta={meta}
+              onPrev={() => load(page - 1)}
+              onNext={() => load(page + 1)}
+              onRefresh={() => load(page)}
+            />
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

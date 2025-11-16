@@ -2,7 +2,11 @@ import React from 'react';
 
 const ErrorMessage = ({ message }) => {
   if (!message) return null;
-  return <div style={{ color: 'red' }}>{message}</div>;
+  return (
+    <div className="alert alert-danger" role="alert">
+      {message}
+    </div>
+  );
 };
 
 export default ErrorMessage;
