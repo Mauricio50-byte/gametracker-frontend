@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   return (
@@ -10,8 +11,8 @@ const Home = () => {
               <h1 className="display-5 fw-bold">Bienvenido a GameTracker</h1>
               <p className="lead mt-3">Organiza tu biblioteca, escribe reseñas y conoce tus estadísticas como gamer. Todo en una sola aplicación rápida y moderna.</p>
               <div className="d-flex gap-2 mt-4">
-                <a href="/biblioteca" className="btn btn-light btn-lg">Ver biblioteca</a>
-                <a href="/agregar" className="btn btn-outline-light btn-lg">Agregar juego</a>
+                <Link to="/biblioteca" className="btn btn-light btn-lg">Ver biblioteca</Link>
+                <Link to="/agregar" className="btn btn-outline-light btn-lg">Agregar juego</Link>
               </div>
             </div>
             <div className="col-md-5 mt-4 mt-md-0">
@@ -25,8 +26,8 @@ const Home = () => {
                 </div>
                 <hr />
                 <div className="d-grid gap-2">
-                  <a href="/reseñas" className="btn btn-primary">Explorar reseñas</a>
-                  <a href="/estadisticas" className="btn btn-outline-primary">Ver estadísticas</a>
+                  <Link to="/reseñas" className="btn btn-primary">Explorar reseñas</Link>
+                  <Link to="/estadisticas" className="btn btn-outline-primary">Ver estadísticas</Link>
                 </div>
               </div>
             </div>
@@ -87,8 +88,8 @@ const Home = () => {
                 <div className="fw-bold">Consejo</div>
                 <div className="mt-2">Usa las reseñas para recordar detalles clave y decidir tus próximos juegos.</div>
                 <div className="mt-3 d-flex gap-2">
-                  <a href="/agregar" className="btn btn-light">Agregar juego</a>
-                  <a href="/reseñas" className="btn btn-outline-light">Crear reseña</a>
+                  <Link to="/agregar" className="btn btn-light">Agregar juego</Link>
+                  <Link to="/reseñas" className="btn btn-outline-light">Crear reseña</Link>
                 </div>
               </div>
             </div>

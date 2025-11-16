@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import ListaReseñas from '../components/reviews/ListaReseñas';
 import Loading from '../components/common/Loading';
 import ErrorMessage from '../components/common/ErrorMessage';
 
-const API_BASE = 'http://localhost:4000';
+const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:4000';
 
 const Reseñas = () => {
   const [items, setItems] = useState([]);
@@ -111,7 +112,7 @@ const Reseñas = () => {
             <h1 className="h3 fw-bold m-0">Reseñas</h1>
             <div className="mt-2">Crea, ordena y explora reseñas de tus juegos.</div>
           </div>
-          <a href="/agregar" className="btn btn-light">Agregar juego</a>
+          <Link to="/agregar" className="btn btn-light">Agregar juego</Link>
         </div>
       </section>
       <section className="py-4">

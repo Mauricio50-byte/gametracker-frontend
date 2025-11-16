@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import Loading from '../components/common/Loading';
 import ErrorMessage from '../components/common/ErrorMessage';
 import ListaReseñas from '../components/reviews/ListaReseñas';
 
-const API_BASE = 'http://localhost:4000';
+const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:4000';
 
 const DetalleJuego = () => {
   const { id } = useParams();
@@ -129,7 +129,7 @@ const DetalleJuego = () => {
             </div>
           </div>
           <div className="d-flex gap-2">
-            <a href="/biblioteca" className="btn btn-light">Volver</a>
+            <Link to="/biblioteca" className="btn btn-light">Volver</Link>
             <button className="btn btn-danger" onClick={eliminar} disabled={deletingGame}>{deletingGame ? 'Eliminando...' : 'Eliminar'}</button>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -6,8 +7,8 @@ const Footer = () => {
       <div className="container d-flex justify-content-between align-items-center">
         <div className="text-muted">GameTracker</div>
         <div className="d-flex gap-3">
-          <a className="text-muted" href="/reseñas">Reseñas</a>
-          <a className="text-muted" href="/estadisticas">Estadísticas</a>
+          <NavLink className="text-muted" to="/reseñas">Reseñas</NavLink>
+          <NavLink className="text-muted" to="/estadisticas">Estadísticas</NavLink>
         </div>
       </div>
     </footer>

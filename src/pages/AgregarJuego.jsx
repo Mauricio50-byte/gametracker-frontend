@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import FormularioJuego from '../components/games/FormularioJuego';
 
 const AgregarJuego = () => {
@@ -11,7 +12,7 @@ const AgregarJuego = () => {
               <h1 className="h3 fw-bold m-0">Agregar Juego</h1>
               <div className="mt-2">Completa los campos, sube la portada y guarda tu juego en la biblioteca.</div>
             </div>
-            <a href="/biblioteca" className="btn btn-light">Volver a la biblioteca</a>
+            <Link to="/biblioteca" className="btn btn-light">Volver a la biblioteca</Link>
           </div>
         </div>
       </section>

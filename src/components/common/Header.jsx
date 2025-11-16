@@ -6,7 +6,7 @@ const Header = () => {
     <header className="sticky top-0 z-40">
       <nav className="navbar navbar-light bg-light border-bottom">
         <div className="container d-flex justify-content-between align-items-center">
-          <a className="navbar-brand fw-semibold" href="/">GameTracker</a>
+          <NavLink className="navbar-brand fw-semibold" to="/">GameTracker</NavLink>
           <div className="d-flex gap-3">
             <NavLink className="nav-link" to="/">Inicio</NavLink>
             <NavLink className="nav-link" to="/biblioteca">Biblioteca</NavLink>

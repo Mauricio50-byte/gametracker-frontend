@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import EstadisticasPersonales from '../components/stats/EstadisticasPersonales';
 import ResumenGeneral from '../components/stats/ResumenGeneral';
 import GraficoPlataformas from '../components/stats/GraficoPlataformas';
@@ -13,7 +14,7 @@ const Estadisticas = () => {
             <h1 className="h3 fw-bold m-0">Estadísticas</h1>
             <div className="mt-2">Resumen general, métricas personales y gráficos</div>
           </div>
-          <a href="/biblioteca" className="btn btn-light">Volver a la biblioteca</a>
+          <Link to="/biblioteca" className="btn btn-light">Volver a la biblioteca</Link>
         </div>
       </section>
 

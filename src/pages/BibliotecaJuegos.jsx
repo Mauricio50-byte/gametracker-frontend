@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import ListaJuegos from '../components/games/ListaJuegos';
 
 const BibliotecaJuegos = () => {
@@ -10,7 +11,7 @@ const BibliotecaJuegos = () => {
             <h1 className="h3 fw-bold m-0">Biblioteca de Juegos</h1>
             <div className="mt-2">Explora, organiza y accede al detalle de cada juego.</div>
           </div>
-          <a href="/agregar" className="btn btn-light">Agregar juego</a>
+          <Link to="/agregar" className="btn btn-light">Agregar juego</Link>
         </div>
       </section>
       <section className="py-4">

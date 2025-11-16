@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const API_BASE = 'http://localhost:4000';
+const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:4000';
 
 const TarjetaReseña = ({ review, onRefresh }) => {
   const filled = Math.max(Math.min(Number(review.puntuacion || 0), 5), 0);
